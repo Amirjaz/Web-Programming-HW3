@@ -22,7 +22,7 @@ public class AuthController {
     private final UserDetailsService userDetailsService;
     private final AuthService authService;
 
-    public AuthController(AuthenticationManager authenticationManager,  @Qualifier("authService") UserDetailsService userDetailsService, AuthService authService) {
+    public AuthController(AuthenticationManager authenticationManager, @Qualifier("authService") UserDetailsService userDetailsService, AuthService authService) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.authService = authService;
@@ -34,8 +34,7 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
-            // Automatically creates session if successful
-            return ResponseEntity.ok("Login successful");
+            return ResponseEntity.ok("Login successful for user: " + authentication.getName());
         } catch (AuthenticationException ex) {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
@@ -43,7 +42,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody AuthRequest request) {
-        authService.register(request);
-        return ResponseEntity.ok("User registered");
+        return ResponseEntity.status(403).body("Registration is disabled. Use mock users: admin/password, user/123456, test/test");
     }
 }
